@@ -13,7 +13,7 @@
 #  limitations under the License.
 import logging
 import time
-from typing import Optional, Mapping, List
+from typing import Optional, Mapping
 
 import _metric_values
 
