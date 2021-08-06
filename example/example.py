@@ -14,6 +14,7 @@
 
 
 import logging
+import math
 import time
 
 from dynatrace.metric.utils import (
@@ -25,26 +26,70 @@ from dynatrace.metric.utils import (
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
-    serializer = DynatraceMetricSerializer(
+    metric_factory = DynatraceMetricFactory(
+        logger.getChild(DynatraceMetricFactory.__name__)
+    )
+
+    default_serializer = DynatraceMetricSerializer(
+        logger.getChild(DynatraceMetricSerializer.__name__)
+    )
+
+    serializer_with_prefix_and_dimensions = DynatraceMetricSerializer(
+        logger.getChild(DynatraceMetricSerializer.__name__),
         "prefix",
         {"default": "dim"},
         True,
         "python-utils-example",
-        logger.getChild(DynatraceMetricSerializer.__name__),
     )
-    metrics_factory = DynatraceMetricFactory(
-        logger.getChild(DynatraceMetricFactory.__name__)
-    )
+    metric_dims = {"metric_dim": "val"}
+    # metric_dims = {}
 
-    double_gauge = metrics_factory.create_double_gauge(
-        "double.gauge",
-        2.3,
-        {"metric": "dim"},
-        time.time(),
-    )
-    
+    metrics = [
+        metric_factory.create_int_gauge(
+            "int.gauge", 2, metric_dims, time.time(), ),
+        metric_factory.create_float_gauge(
+            "float.gauge", 2.3, metric_dims, time.time(), ),
+        metric_factory.create_int_counter_delta(
+            "int.counter", 3, metric_dims, time.time()),
+        metric_factory.create_float_counter_delta(
+            "float.counter", 3.14, metric_dims, time.time()),
+        metric_factory.create_int_summary(
+            "int.summary", 0, 3, 5, 4, metric_dims, time.time()),
+        metric_factory.create_float_summary(
+            "float.summary", 0.1, 3.4, 5.6, 4, metric_dims, time.time()),
+    ]
 
+    for metric in metrics:
+        # print the metric
+        print(default_serializer.serialize(metric))
+        # print the same metric with metric key prefix, metrics source,
+        # and default dimensions
+        print(serializer_with_prefix_and_dimensions.serialize(metric))
 
+    try:
+        metric_factory.create_int_gauge("", 2)
+    except MetricError as err:
+        print("MetricError:", err)
 
-    serialized_double_gauge = serializer.serialize(double_gauge)
-    print(serialized_double_gauge)
+    try:
+        metric_factory.create_float_gauge("nan.gauge", math.nan)
+    except MetricError as err:
+        print("MetricError:", err)
+
+    try:
+        metric_factory.create_float_gauge("inf.gauge", math.inf)
+    except MetricError as err:
+        print("MetricError:", err)
+
+    try:
+        default_serializer.serialize(
+            metric_factory.create_float_gauge(
+                "line.too.long", 3.2,
+                dict([
+                    ("some_long_dimension_key{}".format(x),
+                     "some_equally_long_dimension_value{}".format(x))
+                    for x in range(33)
+                ])
+            ))
+    except MetricError as err:
+        print("MetricError:", err)
