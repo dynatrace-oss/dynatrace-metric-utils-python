@@ -11,11 +11,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import logging
-from typing import Optional, Mapping
-import _enrichment
-import _normalize
-import metrics
+from typing import Optional, Mapping, List
+from . import (
+    _enrichment,
+    _normalize,
+    metrics
+)
 
 
 class DynatraceMetricSerializer:
@@ -90,6 +93,7 @@ class DynatraceMetricSerializer:
         ])
 
         if merged_dimensions:
+            builder.append(",")
             builder.append(self.__serialize_dimensions(merged_dimensions))
 
         builder.append(" ")
