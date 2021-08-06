@@ -44,5 +44,7 @@ class Normalize:
             if normalized_key:
                 return_dict[normalized_key] = self.normalize_dimension_value(
                     value)
+            else:
+                self.__logger.debug("Key is empty, dropping %s=%s", key, value)
 
         return return_dict

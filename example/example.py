@@ -11,12 +11,16 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
+
 import logging
 import time
 
-from dynatrace.metric.utils.dynatrace_metric_serializer import \
-    DynatraceMetricSerializer
-from dynatrace.metric.utils.metrics import MetricFactory
+from dynatrace.metric.utils import (
+    DynatraceMetricSerializer,
+    DynatraceMetricFactory,
+    MetricError,
+)
 
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
@@ -28,8 +32,8 @@ if __name__ == '__main__':
         "python-utils-example",
         logger.getChild(DynatraceMetricSerializer.__name__),
     )
-    metrics_factory = MetricFactory(
-        logger.getChild(MetricFactory.__name__)
+    metrics_factory = DynatraceMetricFactory(
+        logger.getChild(DynatraceMetricFactory.__name__)
     )
 
     double_gauge = metrics_factory.create_double_gauge(
@@ -38,6 +42,9 @@ if __name__ == '__main__':
         {"metric": "dim"},
         time.time(),
     )
+    
+
+
 
     serialized_double_gauge = serializer.serialize(double_gauge)
     print(serialized_double_gauge)

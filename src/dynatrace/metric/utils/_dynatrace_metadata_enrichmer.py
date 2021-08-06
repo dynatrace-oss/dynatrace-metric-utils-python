@@ -11,6 +11,7 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
+
 import logging
 from typing import Mapping, Optional, List
 
@@ -22,18 +23,18 @@ class DynatraceMetadataEnricher:
         self.__logger = logger if logger else logging.getLogger(__name__)
 
     def get_dynatrace_metadata(self) -> Mapping[str, str]:
-        # todo
         return self._parse_dynatrace_metadata(
             self._get_metadata_file_content()
         )
 
-    def _get_metadata_file_name(self, indirection_fname: str) -> Optional[str]:
+    def _get_metadata_file_name(self,
+                                indirection_filename: str) -> Optional[str]:
         file_name = None
-        if not indirection_fname:
+        if not indirection_filename:
             return None
 
         try:
-            with open(indirection_fname, "r") as metadata_indirection_file:
+            with open(indirection_filename, "r") as metadata_indirection_file:
                 file_name = metadata_indirection_file.read()
 
             if not file_name:
@@ -59,8 +60,7 @@ class DynatraceMetadataEnricher:
             with open(metadata_file_name, "r") as attributes_file:
                 return attributes_file.readlines()
         except OSError:
-            self.__logger.info(
-                "Could not read Dynatrace metadata file.")
+            self.__logger.warning("Could not read Dynatrace metadata file.")
 
         return []
 

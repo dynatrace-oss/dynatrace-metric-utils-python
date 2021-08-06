@@ -15,13 +15,16 @@
 import logging
 from typing import Optional, Mapping, List
 from . import (
-    _enrichment,
+    _dynatrace_metadata_enrichmer,
     _normalize,
-    metrics
+    _metric,
+    metric_error,
 )
 
 
 class DynatraceMetricSerializer:
+    METRIC_KEY_MAX_LENGTH = 2000
+
     def __init__(self,
                  metric_key_prefix: Optional[str] = None,
                  default_dimensions: Optional[Mapping[str, str]] = None,
@@ -35,9 +38,9 @@ class DynatraceMetricSerializer:
         if enrich_with_dynatrace_metadata:
             # create an enricher and get the Dynatrace metadata dimensions
             # this enricher uses a child logger of the serializer logger.
-            enricher = _enrichment.DynatraceMetadataEnricher(
+            enricher = _dynatrace_metadata_enrichmer.DynatraceMetadataEnricher(
                 self.__logger.getChild(
-                    _enrichment.DynatraceMetadataEnricher.__name__))
+                    _dynatrace_metadata_enrichmer.DynatraceMetadataEnricher.__name__))
             static_dimensions = enricher.get_dynatrace_metadata()
         else:
             static_dimensions = {}
@@ -70,7 +73,7 @@ class DynatraceMetricSerializer:
             self.__static_dimensions = self.__normalize.normalize_dimensions(
                 static_dimensions)
 
-    def serialize(self, metric: metrics.Metric) -> str:
+    def serialize(self, metric: _metric.Metric) -> str:
         # todo sanity checks
         self.__logger.debug("serializing %s", metric.get_metric_name())
         builder = []
@@ -79,32 +82,39 @@ class DynatraceMetricSerializer:
         if self.__metric_key_prefix:
             metric_name = "{}.{}".format(self.__metric_key_prefix, metric_name)
 
-        # todo break if the name is empty
+        metric_key = self.__normalize.normalize_metric_key(metric_name)
 
-        builder.append(self.__normalize.normalize_metric_key(metric_name))
+        if not metric_key:
+            raise metric_error.MetricError("Metric name is empty")
 
-        metric_dimensions = self.__normalize.normalize_dimensions(
-            metric.get_dimensions())
+        builder.append(metric_key)
 
         merged_dimensions = self.__merge_dimensions([
             self.__default_dimensions,
-            metric_dimensions,
+            self.__normalize.normalize_dimensions(metric.get_dimensions()),
             self.__static_dimensions
         ])
 
         if merged_dimensions:
+            # todo max number of dimensions
             builder.append(",")
             builder.append(self.__serialize_dimensions(merged_dimensions))
 
         builder.append(" ")
-
         builder.append(metric.get_value().serialize_value())
 
-        if metric.get_timestamp():
-            builder.append(" ")
-            builder.append(metric.get_timestamp())
+        timestamp = metric.get_timestamp()
+        if timestamp:
+            builder.append(" {}".format(timestamp))
 
-        return "".join(builder)
+        metric_str = "".join(builder)
+
+        if len(metric_str) > DynatraceMetricSerializer.METRIC_KEY_MAX_LENGTH:
+            raise metric_error.MetricError(
+                "Metric line exceeds maximum length of {} characters".format(
+                    DynatraceMetricSerializer.METRIC_KEY_MAX_LENGTH))
+
+        return metric_str
 
     @staticmethod
     def __merge_dimensions(
