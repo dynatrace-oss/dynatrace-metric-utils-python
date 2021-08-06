@@ -11,16 +11,14 @@
 #  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
-from typing import Optional, Mapping, List
 import logging
-import _normalize
+from typing import Optional, Mapping
 import _enrichment
+import _normalize
 import metrics
 
-VERSION = "0.0.1a0"
 
-
-class DynatraceMetricsSerializer:
+class DynatraceMetricSerializer:
     def __init__(self,
                  metric_key_prefix: Optional[str] = None,
                  default_dimensions: Optional[Mapping[str, str]] = None,
