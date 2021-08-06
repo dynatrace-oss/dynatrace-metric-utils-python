@@ -16,7 +16,7 @@ import tempfile
 import unittest
 from unittest.mock import patch, mock_open
 
-from dynatrace.metric.utils._enrichment import DynatraceMetadataEnricher
+from dynatrace.metric.utils._dynatrace_metadata_enricher import DynatraceMetadataEnricher
 
 
 class TestDynatraceMetadataEnricher(unittest.TestCase):

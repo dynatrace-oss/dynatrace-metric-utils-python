@@ -13,14 +13,10 @@
 #  limitations under the License.
 
 import unittest
-from dynatrace.metric.utils._normalize import Normalize
 
 class MyTestCase(unittest.TestCase):
     def test_something(self):
-        normalizer = Normalize()
-        normalizer.normalize_metric_key("asdf")
-
-        self.assertEqual(True, True)
+        self.assertEqual(True, False)
 
 
 if __name__ == '__main__':
