@@ -27,9 +27,18 @@ from ._metric_values import GaugeValue, CounterValueDelta, SummaryValue
 # implementation changes.
 
 class DynatraceMetricFactory:
+    """
+    Use the DynatraceMetricFactory to create :class:`Metric` objects.
+    """
+
     def __init__(self,
                  logger: Optional[logging.Logger] = None
                  ) -> None:
+        """
+        Create a metrics factory.
+        :param logger: An optional logger. If None is specified, creates one
+        with the name of the class.
+        """
         self.__logger = logger if logger else logging.getLogger(__name__)
 
     def create_int_gauge(self,
@@ -39,6 +48,16 @@ class DynatraceMetricFactory:
                          timestamp: Optional[
                              float] = None,
                          ) -> Metric:
+        """
+        Creates a gauge metric for an integer.
+        The value will be serialized as "gauge,[value]".
+        :param metric_name: The name of the metric
+        :param value: The value to be set on the metric.
+        :param dimensions: An optional dictionary to add as dimensions on this
+         metric.
+        :param timestamp: An optional timestamp (Unix time, in milliseconds).
+        :return: A :class:`Metric` object.
+        """
         self.__logger.debug("creating int gauge (%s) with value %d",
                             metric_name, value)
 
@@ -50,6 +69,16 @@ class DynatraceMetricFactory:
                            dimensions: Optional[Mapping[str, str]] = None,
                            timestamp: Optional[float] = None,
                            ) -> Metric:
+        """
+        Creates a gauge metric for a float.
+        The value will be serialized as "gauge,[value]".
+        :param metric_name: The name of the metric
+        :param value: The value to be set on the metric.
+        :param dimensions: An optional dictionary to add as dimensions on this
+         metric.
+        :param timestamp: An optional timestamp (Unix time, in milliseconds).
+        :return: A :class:`Metric` object.
+        """
         self.__logger.debug("creating float gauge (%s) with value %f",
                             metric_name, value)
 
@@ -62,6 +91,17 @@ class DynatraceMetricFactory:
         dimensions: Optional[Mapping[str, str]] = None,
         timestamp: Optional[float] = None,
     ) -> Metric:
+        """
+        Creates a counter metric for an integer.
+        The value will be serialized as "count,delta=[value]".
+        Only a delta to the previously exported value should be specified here.
+        :param metric_name: The name of the metric
+        :param value: The value to be set on the metric.
+        :param dimensions: An optional dictionary to add as dimensions on this
+         metric.
+        :param timestamp: An optional timestamp (Unix time, in milliseconds).
+        :return: A :class:`Metric` object.
+        """
         self.__logger.debug("creating int counter (%s) with value %d",
                             metric_name, value)
 
@@ -75,6 +115,17 @@ class DynatraceMetricFactory:
         dimensions: Optional[Mapping[str, str]] = None,
         timestamp: Optional[float] = None,
     ) -> Metric:
+        """
+        Creates a counter metric for a float.
+        The value will be serialized as "count,delta=[value]".
+        Only a delta to the previously exported value should be specified here.
+        :param metric_name: The name of the metric
+        :param value: The value to be set on the metric.
+        :param dimensions: An optional dictionary to add as dimensions on this
+         metric.
+        :param timestamp: An optional timestamp (Unix time, in milliseconds).
+        :return: A :class:`Metric` object.
+        """
         self.__logger.debug("creating float counter (%s) with value %f",
                             metric_name, value)
 
@@ -91,6 +142,20 @@ class DynatraceMetricFactory:
         dimensions: Optional[Mapping[str, str]] = None,
         timestamp: Optional[float] = None,
     ) -> Metric:
+        """
+        Creates a summary metric for integers.
+        The value will be serialized as
+        "gauge,min=[min],max=[max],sum=[sum],count=[count]".
+        :param metric_name: The name of the metric.
+        :param min: The smallest value in the summary.
+        :param max: The largest value in the summary.
+        :param sum: The sum of all values in the summary.
+        :param count: The number of observations combined in the summary.
+        :param dimensions: An optional dictionary to add as dimensions on this
+         metric.
+        :param timestamp: An optional timestamp (Unix time, in milliseconds).
+        :return: A :class:`Metric` object.
+        """
         self.__logger.debug("creating int summary (%s) with values: "
                             "min: %d, max: %d, sum: %d, count: %d",
                             metric_name, min, max, sum, count)
@@ -108,6 +173,20 @@ class DynatraceMetricFactory:
         dimensions: Optional[Mapping[str, str]] = None,
         timestamp: Optional[float] = None,
     ) -> Metric:
+        """
+        Creates a summary metric for floats.
+        The value will be serialized as
+        "gauge,min=[min],max=[max],sum=[sum],count=[count]".
+        :param metric_name: The name of the metric.
+        :param min: The smallest value in the summary.
+        :param max: The largest value in the summary.
+        :param sum: The sum of all values in the summary.
+        :param count: The number of observations combined in the summary.
+        :param dimensions: An optional dictionary to add as dimensions on this
+         metric.
+        :param timestamp: An optional timestamp (Unix time, in milliseconds).
+        :return: A :class:`Metric` object.
+        """
         self.__logger.debug("creating float summary (%s) with values: "
                             "min: %f, max: %f, sum: %f, count: %f",
                             metric_name, min, max, sum, count)

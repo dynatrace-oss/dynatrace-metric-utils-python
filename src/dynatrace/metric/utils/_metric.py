@@ -19,12 +19,24 @@ from .metric_error import MetricError
 
 
 class Metric:
+    """
+    Class that holds created metrics. Every metric contains a class derived
+     from :class:`MetricValue`, which specifies the serialization logic.
+    """
+
     def __init__(self,
                  metric_name: str,
                  value: MetricValue,
                  dimensions: Optional[Mapping[str, str]] = None,
                  timestamp: Optional[int] = None
                  ) -> None:
+        """
+        Create a new metric. Should not be called by the user.
+        :param metric_name: The name of the metric. Cannot be None or empty.
+        :param value: The :class:`MetricValue` to add
+        :param dimensions: Optional dimensions for this metric
+        :param timestamp: Optional timestamp in milliseconds (Unix time).
+        """
         if not metric_name:
             raise MetricError("Metric name cannot be empty")
 

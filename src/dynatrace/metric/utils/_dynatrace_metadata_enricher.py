@@ -17,12 +17,20 @@ from typing import Mapping, Optional, List
 
 
 class DynatraceMetadataEnricher:
+    """
+    Reads Dynatrace metadata using the magic file.
+    """
+
     def __init__(self,
                  logger: Optional[logging.Logger] = None
                  ) -> None:
         self.__logger = logger if logger else logging.getLogger(__name__)
 
     def get_dynatrace_metadata(self) -> Mapping[str, str]:
+        """
+        Get all available Dynatrace metadata in a dictionary.
+        :return: A dictionary containing all read Dynatrace metadata.
+        """
         return self._parse_dynatrace_metadata(
             self._get_metadata_file_content()
         )

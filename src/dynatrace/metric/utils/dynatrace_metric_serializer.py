@@ -14,15 +14,17 @@
 
 import logging
 from typing import Optional, Mapping, List
-from . import (
-    _dynatrace_metadata_enrichmer,
-    _normalize,
-    _metric,
-    metric_error,
-)
+
+from ._dynatrace_metadata_enricher import DynatraceMetadataEnricher
+from ._normalize import Normalize
+from ._metric import Metric
+from .metric_error import MetricError
 
 
 class DynatraceMetricSerializer:
+    """
+    The DynatraceMetricsSerializer transforms :class:`Metric`
+    """
     METRIC_KEY_MAX_LENGTH = 2000
 
     def __init__(self,
@@ -38,16 +40,15 @@ class DynatraceMetricSerializer:
         if enrich_with_dynatrace_metadata:
             # create an enricher and get the Dynatrace metadata dimensions
             # this enricher uses a child logger of the serializer logger.
-            enricher = _dynatrace_metadata_enrichmer.DynatraceMetadataEnricher(
-                self.__logger.getChild(
-                    _dynatrace_metadata_enrichmer.DynatraceMetadataEnricher.__name__))
+            enricher = DynatraceMetadataEnricher(
+                self.__logger.getChild(DynatraceMetadataEnricher.__name__))
             static_dimensions = enricher.get_dynatrace_metadata()
         else:
             static_dimensions = {}
 
         # create an instance of the normalizer class with a child logger
-        self.__normalize = _normalize.Normalize(
-            self.__logger.getChild(_normalize.Normalize.__name__)
+        self.__normalize = Normalize(
+            self.__logger.getChild(Normalize.__name__)
         )
 
         # String is not None and non-empty.
@@ -73,8 +74,13 @@ class DynatraceMetricSerializer:
             self.__static_dimensions = self.__normalize.normalize_dimensions(
                 static_dimensions)
 
-    def serialize(self, metric: _metric.Metric) -> str:
-        # todo sanity checks
+    def serialize(self, metric: Metric) -> str:
+        """
+        Serialize the metric object and create a valid metric line that can
+        be ingested with the Dynatrace metrics API
+        :param metric: The metric to be serialized.
+        :return: The string representation of the metric.
+        """
         self.__logger.debug("serializing %s", metric.get_metric_name())
         builder = []
 
@@ -85,7 +91,7 @@ class DynatraceMetricSerializer:
         metric_key = self.__normalize.normalize_metric_key(metric_name)
 
         if not metric_key:
-            raise metric_error.MetricError("Metric name is empty")
+            raise MetricError("Metric name is empty")
 
         builder.append(metric_key)
 
@@ -110,7 +116,7 @@ class DynatraceMetricSerializer:
         metric_str = "".join(builder)
 
         if len(metric_str) > DynatraceMetricSerializer.METRIC_KEY_MAX_LENGTH:
-            raise metric_error.MetricError(
+            raise MetricError(
                 "Metric line exceeds maximum length of {} characters".format(
                     DynatraceMetricSerializer.METRIC_KEY_MAX_LENGTH))
 
