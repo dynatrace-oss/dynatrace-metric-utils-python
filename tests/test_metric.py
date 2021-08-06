@@ -12,5 +12,16 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-VERSION = "0.0.1a0"
+import unittest
+from dynatrace.metric.utils._normalize import Normalize
 
+class MyTestCase(unittest.TestCase):
+    def test_something(self):
+        normalizer = Normalize()
+        normalizer.normalize_metric_key("asdf")
+
+        self.assertEqual(True, True)
+
+
+if __name__ == '__main__':
+    unittest.main()
