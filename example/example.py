@@ -44,19 +44,21 @@ if __name__ == '__main__':
     metric_dims = {"metric_dim": "val"}
     # metric_dims = {}
 
+    current_milliseconds = time.time() * 1000
+
     metrics = [
         metric_factory.create_int_gauge(
-            "int.gauge", 2, metric_dims, time.time(), ),
+            "int.gauge", 2, metric_dims, current_milliseconds),
         metric_factory.create_float_gauge(
-            "float.gauge", 2.3, metric_dims, time.time(), ),
+            "float.gauge", 2.3, metric_dims, current_milliseconds),
         metric_factory.create_int_counter_delta(
-            "int.counter", 3, metric_dims, time.time()),
+            "int.counter", 3, metric_dims, current_milliseconds),
         metric_factory.create_float_counter_delta(
-            "float.counter", 3.14, metric_dims, time.time()),
+            "float.counter", 3.14, metric_dims, current_milliseconds),
         metric_factory.create_int_summary(
-            "int.summary", 0, 3, 5, 4, metric_dims, time.time()),
+            "int.summary", 0, 3, 5, 4, metric_dims, current_milliseconds),
         metric_factory.create_float_summary(
-            "float.summary", 0.1, 3.4, 5.6, 4, metric_dims, time.time()),
+            "float.summary", 0.1, 3.4, 5.6, 4, metric_dims, current_milliseconds),
     ]
 
     for metric in metrics:

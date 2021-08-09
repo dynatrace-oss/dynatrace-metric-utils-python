@@ -35,7 +35,7 @@ class Metric:
         :param metric_name: The name of the metric. Cannot be None or empty.
         :param value: The :class:`MetricValue` to add
         :param dimensions: Optional dimensions for this metric
-        :param timestamp: Optional timestamp in milliseconds (Unix time).
+        :param timestamp: Optional timestamp in milliseconds (Unix time * 1000)
         """
         if not metric_name:
             raise MetricError("Metric name cannot be empty")
@@ -43,8 +43,17 @@ class Metric:
         self.__metric_name = metric_name
         self.__value = value
         self.__dimensions = dimensions if dimensions else {}
-        self.__timestamp = str(
-            int(round(timestamp * 1000))) if timestamp else None
+
+        if timestamp:
+            # timestamp between the year 2000 and 3000
+            if 946681200000 <= timestamp < 32503676400000:
+                self.__timestamp = str(int(round(timestamp)))
+            else:
+                raise MetricError('timestamp needs to be between the years '
+                                  '2000 and 3000 and specified in '
+                                  'milliseconds.')
+        else:
+            self.__timestamp = None
 
     def get_metric_name(self) -> str:
         return self.__metric_name

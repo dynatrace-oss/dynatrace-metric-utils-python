@@ -45,8 +45,7 @@ class DynatraceMetricFactory:
                          metric_name: str,
                          value: int,
                          dimensions: Optional[Mapping[str, str]] = None,
-                         timestamp: Optional[
-                             float] = None,
+                         timestamp: Optional[float] = None,
                          ) -> Metric:
         """
         Creates a gauge metric for an integer.
