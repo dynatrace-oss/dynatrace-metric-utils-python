@@ -14,6 +14,7 @@
 
 import logging
 import re
+import unicodedata
 from typing import Mapping, Optional
 
 
@@ -42,8 +43,10 @@ class Normalize:
     __dk_max_length = 100
 
     # Dimension values (dv)
-    # regex for control characters.
-    __re_dv_cc = re.compile(r"\p{C}+")
+    # in order to delete control characters, all control chars are replaced
+    # with the null character (\u0000), and then all consecutive null chars
+    # are replaced with one underscore.
+    __re_dv_null_characters = re.compile(r"\u0000+")
 
     # characters to be escaped in the dimension value
     __re_dv_characters_to_escape = re.compile(r"([= ,\\\"])")
@@ -57,8 +60,8 @@ class Normalize:
 
     def normalize_metric_key(self, metric_key: str) -> Optional[str]:
         self.__logger.debug("normalizing metric key %s", metric_key)
-        # TODO:
-        if not metric_key.strip():
+
+        if not metric_key:
             return None
 
         # trim if too long
@@ -69,20 +72,70 @@ class Normalize:
             return None
 
         first = self.__re_mk_invalid_characters.sub(
+            "_",
             self.__re_mk_first_identifier_section_start.sub(
-                first, "_"
-            ), "_"
+                "_",
+                first,
+            ),
         )
 
-        return metric_key
+        rest = list(filter(None, map(
+            self.__normalize_metric_key_section, rest
+        )))
 
-    def normalize_dimension_key(self, key: str) -> str:
-        self.__logger.debug("normalizing dimension key %s", key)
-        return key
+        return ".".join([first, *rest])
 
-    def normalize_dimension_value(self, value: str) -> str:
-        self.__logger.debug("normalizing dimension value %s", value)
-        return value
+    @classmethod
+    def __normalize_metric_key_section(cls, section: str) -> str:
+        # delete invalid characters at the start of the section key
+        section = cls.__re_mk_identifier_section_start.sub("_", section)
+        # replace ranges of invalid characters in the key with one underscore.
+        section = cls.__re_mk_invalid_characters.sub("_", section)
+        return section
+
+    def normalize_dimension_key(self, dimension_key: str) -> Optional[str]:
+        self.__logger.debug("normalizing dimension key %s", dimension_key)
+
+        if not dimension_key:
+            return None
+
+        dimension_key = dimension_key[:self.__dk_max_length]
+
+        sections = list(filter(None, map(
+            self.__normalize_dimension_key_section,
+            dimension_key.split(".")
+        )))
+
+        return ".".join(sections)
+
+    @classmethod
+    def __normalize_dimension_key_section(cls, section: str):
+        # convert to lowercase
+        section = section.lower()
+        # delete leading invalid characters
+        section = cls.__re_dk_start.sub("_", section)
+        # replace consecutive invalid characters with one underscore:
+        section = cls.__re_dk_invalid_chars.sub("_", section)
+
+        return section
+
+    def normalize_dimension_value(self, dimension_value: str) -> str:
+        self.__logger.debug("normalizing dimension value %s", dimension_value)
+        if not dimension_value:
+            # for dimension values, return an empty string, otherwise "None"
+            # will be serialized.
+            return ""
+
+        dimension_value = dimension_value[:self.__dv_max_length]
+
+        return self.__replace_control_characters(dimension_value)
+
+    @classmethod
+    def __replace_control_characters(cls, s: str):
+        s = "".join(
+            c if unicodedata.category(c)[0] != "C" else "\u0000" for c in s
+        )
+        return cls.__re_dv_null_characters.sub("_", s)
 
     def normalize_dimensions(self,
                              dimensions: Mapping[str, str]
