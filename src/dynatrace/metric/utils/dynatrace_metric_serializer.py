@@ -145,8 +145,9 @@ class DynatraceMetricSerializer:
 
         return combined
 
-    @staticmethod
-    def __serialize_dimensions(dimensions: Mapping[str, str]) -> str:
+    def __serialize_dimensions(self,
+                               dimensions: Mapping[str, str]
+                               ) -> str:
         """
         Combine a dimension list into a string of key=value pairs, separated
         by a comma.
@@ -155,6 +156,9 @@ class DynatraceMetricSerializer:
         """
         builder = []
         for k, v in dimensions.items():
-            builder.append("{}={}".format(k, v))
+            builder.append("{}={}".format(
+                k,
+                self.__normalize.escape_dimension_value(v)
+            ))
 
         return ",".join(builder)

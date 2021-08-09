@@ -16,7 +16,8 @@ import tempfile
 import unittest
 from unittest.mock import patch, mock_open
 
-from dynatrace.metric.utils._dynatrace_metadata_enricher import DynatraceMetadataEnricher
+from dynatrace.metric.utils._dynatrace_metadata_enricher import \
+    DynatraceMetadataEnricher
 
 
 class TestDynatraceMetadataEnricher(unittest.TestCase):
@@ -58,7 +59,7 @@ class TestDynatraceMetadataEnricher(unittest.TestCase):
 
 
 class TestParseMetadata(unittest.TestCase):
-    @patch('dynatrace.metric.utils._enrichment'
+    @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._parse_dynatrace_metadata')
     def test_mock_get_metadata_file(self, mock_func):
         mock_func.return_value = {"k1": "v1", "k2": "v2"}
@@ -68,7 +69,7 @@ class TestParseMetadata(unittest.TestCase):
 
         self.assertEqual({"k1": "v1", "k2": "v2"}, metadata)
 
-    @patch('dynatrace.metric.utils._enrichment'
+    @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._parse_dynatrace_metadata')
     def test_tags_overwritten(self, mock_func):
         mock_func.return_value = {"tag1": "newValue"}
@@ -149,7 +150,7 @@ class TestGetMetadataContents(unittest.TestCase):
             self.assertEqual("key1=value1\n", res[0])
             self.assertEqual("key2=value2", res[1])
 
-    @patch('dynatrace.metric.utils._enrichment'
+    @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._get_metadata_file_name')
     def test_get_file_contents_from_none(self, mock_func):
         mock_func.return_value = None
@@ -158,7 +159,7 @@ class TestGetMetadataContents(unittest.TestCase):
         res = enricher._get_metadata_file_content()
         self.assertEqual(0, len(res))
 
-    @patch('dynatrace.metric.utils._enrichment'
+    @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._get_metadata_file_name')
     def test_get_file_contents_from_tmpfile(self, mock_func):
         with tempfile.TemporaryDirectory() as tmp_dir:
@@ -174,7 +175,7 @@ class TestGetMetadataContents(unittest.TestCase):
             self.assertEqual("key1=value1\n", res[0])
             self.assertEqual("key2=value2", res[1])
 
-    @patch('dynatrace.metric.utils._enrichment'
+    @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._get_metadata_file_name')
     def test_get_file_contents_from_nonexistent_file(self, mock_func):
         temp = tempfile.NamedTemporaryFile()
@@ -188,7 +189,7 @@ class TestGetMetadataContents(unittest.TestCase):
         res = enricher._get_metadata_file_content()
         self.assertEqual(0, len(res))
 
-    @patch('dynatrace.metric.utils._enrichment'
+    @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._get_metadata_file_name')
     def test_get_file_contents_from_invalid_filename(self, mock_func):
         mock_func.return_value = "^%#&"

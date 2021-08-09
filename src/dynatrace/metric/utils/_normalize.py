@@ -150,3 +150,10 @@ class Normalize:
                 self.__logger.debug("Key is empty, dropping %s=%s", key, value)
 
         return return_dict
+
+    def escape_dimension_value(self,
+                               dimension_value: str,
+                               ) -> str:
+        self.__logger.debug("escaping dimension value: %s", dimension_value)
+        return self.__re_dv_characters_to_escape.sub(r"\\\g<1>",
+                                                     dimension_value)

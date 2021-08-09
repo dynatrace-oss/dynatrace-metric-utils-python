@@ -189,3 +189,22 @@ cases_dimension_values = [
                          ids=[x[0] for x in cases_dimension_values])
 def test_parametrized_normalize_dimension_value(msg, inp, exp):
     assert normalizer.normalize_dimension_value(inp) == exp
+
+
+cases_escape_dimension_values = [
+    ("escape spaces", "a b", "a\\ b"),
+    ("escape comma", "a,b", "a\\,b"),
+    ("escape equals", "a=b", "a\\=b"),
+    ("escape backslash", "a\\b", "a\\\\b"),
+    ("escape double quotes", "a\"b\"\"c", "a\\\"b\\\"\\\"c"),
+    ("escape multiple special chars", " ,=\\", "\\ \\,\\=\\\\"),
+    ("escape consecutive special chars", "  ,,==\\\\",
+     "\\ \\ \\,\\,\\=\\=\\\\\\\\"),
+    ("escape key-value pair", "key=\"value\"", "key\\=\\\"value\\\""),
+]
+
+
+@pytest.mark.parametrize("msg,inp,exp", cases_escape_dimension_values,
+                         ids=[x[0] for x in cases_escape_dimension_values])
+def test_parametrized_escape_dimension_value(msg, inp, exp):
+    assert normalizer.escape_dimension_value(inp) == exp
