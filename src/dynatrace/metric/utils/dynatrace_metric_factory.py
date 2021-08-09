@@ -111,7 +111,7 @@ class DynatraceMetricFactory:
     def create_float_counter_delta(
         self,
         metric_name: str,
-        value: int,
+        value: float,
         dimensions: Optional[Mapping[str, str]] = None,
         timestamp: Optional[float] = None,
     ) -> Metric:

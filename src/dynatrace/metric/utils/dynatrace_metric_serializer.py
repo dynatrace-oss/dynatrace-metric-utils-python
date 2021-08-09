@@ -23,16 +23,18 @@ from .metric_error import MetricError
 
 class DynatraceMetricSerializer:
     """
-    The DynatraceMetricsSerializer transforms :class:`Metric`
+    The DynatraceMetricsSerializer transforms :class:`Metric` objects into
+    strings, while also enriching them with application- or Dynatrace-
+    specific metadata.
     """
     METRIC_KEY_MAX_LENGTH = 2000
 
     def __init__(self,
+                 logger: Optional[logging.Logger] = None,
                  metric_key_prefix: Optional[str] = None,
                  default_dimensions: Optional[Mapping[str, str]] = None,
                  enrich_with_dynatrace_metadata: bool = True,
                  metrics_source: Optional[str] = None,
-                 logger: Optional[logging.Logger] = None
                  ):
 
         self.__logger = logger if logger else logging.getLogger(__name__)
@@ -126,6 +128,16 @@ class DynatraceMetricSerializer:
     def __merge_dimensions(
         dimension_maps: List[Mapping[str, str]]
     ) -> Mapping[str, str]:
+        """
+        Merge multiple dicts of dimensions. Only normalized dimensions should
+        be passed to this method. Dimensions in dictionaries passed further
+        left in the list will overwrite dimensions in dictionaries passed
+        further right, if they share the same key.
+
+        :param dimension_maps: A list of dimension dictionaries.
+        :return: A dictionary that contains all dimensions from the passed
+        dictionaries.
+        """
         combined = {}
         for dimension_map in dimension_maps:
             for k, v in dimension_map.items():
@@ -135,6 +147,12 @@ class DynatraceMetricSerializer:
 
     @staticmethod
     def __serialize_dimensions(dimensions: Mapping[str, str]) -> str:
+        """
+        Combine a dimension list into a string of key=value pairs, separated
+        by a comma.
+        :param dimensions: the dimensions map to serialize
+        :return: A string representing the dimensions.
+        """
         builder = []
         for k, v in dimensions.items():
             builder.append("{}={}".format(k, v))
