@@ -15,6 +15,7 @@
 import math
 from abc import ABC, abstractmethod
 from typing import Union
+
 from . import (
     metric_error,
 )
@@ -25,6 +26,30 @@ def _raise_if_nan_or_inf(value: Union[int, float]):
         raise metric_error.MetricError("Value is NaN")
     if math.isinf(value):
         raise metric_error.MetricError("Value is Infinite")
+
+
+def _format_float(value: float):
+    if abs(value) > 1e15:
+        as_string = "{:.8e}".format(value)
+    elif 0 < abs(value) < 1e-15:
+        as_string = "{:.8e}".format(value)
+    else:
+        as_string = str(value)
+
+    if "0e" in as_string:
+        start, end = as_string.split("e")
+        start = str(start).rstrip("0")
+        if start.endswith("."):
+            start = start + "0"
+        return start + "e" + end
+
+    if as_string.endswith(".0"):
+        no_trailing_zero = as_string[0:len(as_string) - 2]
+        if no_trailing_zero == "-0":
+            return "0"
+        return no_trailing_zero
+
+    return as_string
 
 
 class MetricValue(ABC):
@@ -42,7 +67,7 @@ class GaugeValue(MetricValue):
         self._value = value
 
     def serialize_value(self) -> str:
-        return "gauge,{}".format(self._value)
+        return "gauge,{}".format(_format_float(self._value))
 
 
 class CounterValueDelta(MetricValue):
@@ -53,7 +78,7 @@ class CounterValueDelta(MetricValue):
         self._value = value
 
     def serialize_value(self) -> str:
-        return "count,delta={}".format(self._value)
+        return "count,delta={}".format(_format_float(self._value))
 
 
 class SummaryValue(MetricValue):
@@ -79,5 +104,9 @@ class SummaryValue(MetricValue):
         self._count = count
 
     def serialize_value(self) -> str:
-        return "min={},max={},sum={},count={}".format(self._min, self._max,
-                                                      self._sum, self._count)
+        return "gauge,min={},max={},sum={},count={}".format(
+            _format_float(self._min),
+            _format_float(self._max),
+            _format_float(self._sum),
+            self._count
+        )

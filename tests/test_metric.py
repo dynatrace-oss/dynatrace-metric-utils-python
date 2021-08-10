@@ -56,6 +56,3 @@ class TestMetric(unittest.TestCase):
         with self.assertRaises(MetricError):
             Metric("", GaugeValue(2))
 
-
-if __name__ == '__main__':
-    unittest.main()
