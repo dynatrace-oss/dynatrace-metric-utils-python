@@ -12,12 +12,14 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
+class DynatraceMetricApiConstants:
+    __default_oneagent_endpoint: str = "http://localhost:14499/metrics/ingest"
+    __payload_lines_limit = 1000
 
-from .dynatrace_metric_factory import DynatraceMetricFactory  # noqa: F401
-from .dynatrace_metric_serializer import \
-    DynatraceMetricSerializer  # noqa: F401
-from .metric_error import MetricError  # noqa: F401
-from .dynatrace_metric_api_constants import \
-    DynatraceMetricApiConstants  # noqa: F401
+    @classmethod
+    def default_oneagent_endpoint(cls) -> str:
+        return cls.__default_oneagent_endpoint
 
-VERSION = "0.0.1a0"
+    @classmethod
+    def payload_lines_limit(cls) -> int:
+        return cls.__payload_lines_limit

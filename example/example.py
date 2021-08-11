@@ -21,6 +21,7 @@ from dynatrace.metric.utils import (
     DynatraceMetricSerializer,
     DynatraceMetricFactory,
     MetricError,
+    DynatraceMetricApiConstants,
 )
 
 if __name__ == '__main__':
@@ -42,7 +43,6 @@ if __name__ == '__main__':
         "python-utils-example",
     )
     metric_dims = {"metric_dim": "val"}
-    # metric_dims = {}
 
     current_milliseconds = time.time() * 1000
 
@@ -68,6 +68,11 @@ if __name__ == '__main__':
         # print the same metric with metric key prefix, metrics source,
         # and default dimensions
         print(serializer_with_prefix_and_dimensions.serialize(metric))
+
+    print("default endpoint:",
+          DynatraceMetricApiConstants.default_oneagent_endpoint())
+    print("maximum lines in export batch:",
+          DynatraceMetricApiConstants.payload_lines_limit())
 
     try:
         metric_factory.create_int_gauge("", 2)
