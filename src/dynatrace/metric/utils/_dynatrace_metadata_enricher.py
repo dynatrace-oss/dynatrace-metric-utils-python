@@ -50,7 +50,7 @@ class DynatraceMetadataEnricher:
                                       "in indirection file.")
 
         except OSError:
-            self.__logger.warning("Could not read local Dynatrace metadata "
+            self.__logger.warning("Could not read Dynatrace metadata "
                                   "enrichment file. This is normal if no "
                                   "OneAgent is installed.")
 

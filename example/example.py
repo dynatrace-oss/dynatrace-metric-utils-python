@@ -58,7 +58,8 @@ if __name__ == '__main__':
         metric_factory.create_int_summary(
             "int.summary", 0, 3, 5, 4, metric_dims, current_milliseconds),
         metric_factory.create_float_summary(
-            "float.summary", 0.1, 3.4, 5.6, 4, metric_dims, current_milliseconds),
+            "float.summary", 0.1, 3.4, 5.6, 4, metric_dims,
+            current_milliseconds),
     ]
 
     for metric in metrics:
