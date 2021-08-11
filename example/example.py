@@ -18,25 +18,25 @@ import math
 import time
 
 from dynatrace.metric.utils import (
-    DynatraceMetricSerializer,
-    DynatraceMetricFactory,
+    DynatraceMetricsSerializer,
+    DynatraceMetricsFactory,
     MetricError,
-    DynatraceMetricApiConstants,
+    DynatraceMetricsApiConstants,
 )
 
 if __name__ == '__main__':
     logger = logging.getLogger(__name__)
 
-    metric_factory = DynatraceMetricFactory(
-        logger.getChild(DynatraceMetricFactory.__name__)
+    metric_factory = DynatraceMetricsFactory(
+        logger.getChild(DynatraceMetricsFactory.__name__)
     )
 
-    default_serializer = DynatraceMetricSerializer(
-        logger.getChild(DynatraceMetricSerializer.__name__)
+    default_serializer = DynatraceMetricsSerializer(
+        logger.getChild(DynatraceMetricsSerializer.__name__)
     )
 
-    serializer_with_prefix_and_dimensions = DynatraceMetricSerializer(
-        logger.getChild(DynatraceMetricSerializer.__name__),
+    serializer_with_prefix_and_dimensions = DynatraceMetricsSerializer(
+        logger.getChild(DynatraceMetricsSerializer.__name__),
         "prefix",
         {"default": "dim"},
         True,
@@ -70,9 +70,9 @@ if __name__ == '__main__':
         print(serializer_with_prefix_and_dimensions.serialize(metric))
 
     print("default endpoint:",
-          DynatraceMetricApiConstants.default_oneagent_endpoint())
+          DynatraceMetricsApiConstants.default_oneagent_endpoint())
     print("maximum lines in export batch:",
-          DynatraceMetricApiConstants.payload_lines_limit())
+          DynatraceMetricsApiConstants.payload_lines_limit())
 
     try:
         metric_factory.create_int_gauge("", 2)

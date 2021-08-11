@@ -14,8 +14,8 @@
 
 from unittest import TestCase
 
-from dynatrace.metric.utils import DynatraceMetricFactory, \
-    DynatraceMetricSerializer, MetricError
+from dynatrace.metric.utils import DynatraceMetricsFactory, \
+    DynatraceMetricsSerializer, MetricError
 
 
 class TestDynatraceMetricSerializer(TestCase):
@@ -28,11 +28,11 @@ class TestDynatraceMetricSerializer(TestCase):
         # 01/01/2021 00:00:00
         cls.test_timestamp = 1609455600000
 
-        cls.factory = DynatraceMetricFactory()
+        cls.factory = DynatraceMetricsFactory()
 
     def test_default(self):
         # turn off enrichment to not break on systems that have a oneagent
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
 
@@ -43,7 +43,7 @@ class TestDynatraceMetricSerializer(TestCase):
             ))
 
     def test_with_metric_dims(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False)
 
         self.assertEqual(
@@ -53,7 +53,7 @@ class TestDynatraceMetricSerializer(TestCase):
             ))
 
     def test_dimensions_normalized(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False)
 
         test_dims = {
@@ -68,7 +68,7 @@ class TestDynatraceMetricSerializer(TestCase):
             ))
 
     def test_with_timestamp(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False)
         self.assertEqual(
             "metric gauge,100 " + str(self.test_timestamp),
@@ -78,7 +78,7 @@ class TestDynatraceMetricSerializer(TestCase):
             ))
 
     def test_with_metric_dims_and_timestamp(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False)
         self.assertEqual(
             "metric,dim1=val1 gauge,100 " + str(self.test_timestamp),
@@ -89,7 +89,7 @@ class TestDynatraceMetricSerializer(TestCase):
 
     def test_with_prefix(self):
         # first parameter is the logger, which we dont need here.
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             None, "prefix", enrich_with_dynatrace_metadata=False
         )
 
@@ -101,7 +101,7 @@ class TestDynatraceMetricSerializer(TestCase):
 
     def test_with_prefix_trailing_dot(self):
         # first parameter is the logger, which we dont need here.
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             None, "prefix.", enrich_with_dynatrace_metadata=False
         )
 
@@ -113,7 +113,7 @@ class TestDynatraceMetricSerializer(TestCase):
 
     def test_with_default_dimensions(self):
         default_dims = {"default1": "value1", "default2": "value2"}
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             None, None, default_dims, enrich_with_dynatrace_metadata=False,
         )
 
@@ -124,7 +124,7 @@ class TestDynatraceMetricSerializer(TestCase):
             ))
 
     def test_metrics_source(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             None, None, None, False, "test_source"
         )
 
@@ -135,7 +135,7 @@ class TestDynatraceMetricSerializer(TestCase):
             ))
 
     def test_metrics_source_escaped(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             None, None, None, False, "test source!"
         )
 
@@ -160,12 +160,12 @@ class TestDynatraceMetricSerializer(TestCase):
             "dim3": "static3"
         }
 
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             None, None, default_dims, False
         )
         # setting a private variable from the outside should not be done but
         # is done here for testing purposes.
-        serializer._DynatraceMetricSerializer__static_dimensions = static_dims
+        serializer._DynatraceMetricsSerializer__static_dimensions = static_dims
 
         self.assertEqual(
             "metric,dim1=default1,dim2=metric2,dim3=static3 gauge,100",
@@ -186,10 +186,10 @@ class TestDynatraceMetricSerializer(TestCase):
             "dim3": "static3"
         }
 
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
-        merged = serializer._DynatraceMetricSerializer__merge_dimensions(
+        merged = serializer._DynatraceMetricsSerializer__merge_dimensions(
             [default_dims, metric_dims, static_dims]
         )
         self.assertDictEqual(
@@ -206,10 +206,10 @@ class TestDynatraceMetricSerializer(TestCase):
         b = {"b1": "b1", "b2": "b2", "b3": "b3"}
         c = {"c1": "c1", "c2": "c2", "c3": "c3"}
 
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
-        merged = serializer._DynatraceMetricSerializer__merge_dimensions(
+        merged = serializer._DynatraceMetricsSerializer__merge_dimensions(
             [a, b, c]
         )
 
@@ -222,7 +222,7 @@ class TestDynatraceMetricSerializer(TestCase):
         )
 
     def test_invalid_metric_key(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
 
@@ -232,7 +232,7 @@ class TestDynatraceMetricSerializer(TestCase):
         )
 
     def test_empty_metric_key(self):
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
         with self.assertRaises(MetricError):
@@ -243,7 +243,7 @@ class TestDynatraceMetricSerializer(TestCase):
         for i in range(20):
             test_dims["a" * 50 + str(i)] = "b" * 50 + str(i)
 
-        serializer = DynatraceMetricSerializer(
+        serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
         with self.assertRaises(MetricError):

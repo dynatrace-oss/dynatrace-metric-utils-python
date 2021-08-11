@@ -55,4 +55,3 @@ class TestMetric(unittest.TestCase):
     def test_empty_metric_name(self):
         with self.assertRaises(MetricError):
             Metric("", GaugeValue(2))
-

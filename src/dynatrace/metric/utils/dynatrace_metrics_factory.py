@@ -26,7 +26,7 @@ from ._metric_values import GaugeValue, CounterValueDelta, SummaryValue
 # one of these types, the API stays the same, and only the underlying
 # implementation changes.
 
-class DynatraceMetricFactory:
+class DynatraceMetricsFactory:
     """
     Use the DynatraceMetricFactory to create :class:`Metric` objects.
     """

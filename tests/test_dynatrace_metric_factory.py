@@ -14,13 +14,13 @@
 import math
 from unittest import TestCase
 
-from dynatrace.metric.utils import DynatraceMetricFactory, MetricError
+from dynatrace.metric.utils import DynatraceMetricsFactory, MetricError
 
 
 class TestDynatraceMetricFactory(TestCase):
     @classmethod
     def setUpClass(cls) -> None:
-        cls.factory = DynatraceMetricFactory()
+        cls.factory = DynatraceMetricsFactory()
         cls.test_dims = {
             "dim1": "val1",
             "dim2": "val2",

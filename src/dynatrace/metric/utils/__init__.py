@@ -13,11 +13,11 @@
 #  limitations under the License.
 
 
-from .dynatrace_metric_factory import DynatraceMetricFactory  # noqa: F401
-from .dynatrace_metric_serializer import \
-    DynatraceMetricSerializer  # noqa: F401
+from .dynatrace_metrics_factory import DynatraceMetricsFactory  # noqa: F401
+from .dynatrace_metrics_serializer import \
+    DynatraceMetricsSerializer  # noqa: F401
 from .metric_error import MetricError  # noqa: F401
-from .dynatrace_metric_api_constants import \
-    DynatraceMetricApiConstants  # noqa: F401
+from .dynatrace_metrics_api_constants import \
+    DynatraceMetricsApiConstants  # noqa: F401
 
 VERSION = "0.0.1a0"

@@ -12,7 +12,7 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-class DynatraceMetricApiConstants:
+class DynatraceMetricsApiConstants:
     __default_oneagent_endpoint: str = "http://localhost:14499/metrics/ingest"
     __payload_lines_limit = 1000
 

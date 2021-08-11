@@ -21,7 +21,7 @@ from ._metric import Metric
 from .metric_error import MetricError
 
 
-class DynatraceMetricSerializer:
+class DynatraceMetricsSerializer:
     """
     The DynatraceMetricsSerializer transforms :class:`Metric` objects into
     strings, while also enriching them with application- or Dynatrace-
@@ -117,10 +117,10 @@ class DynatraceMetricSerializer:
 
         metric_str = "".join(builder)
 
-        if len(metric_str) > DynatraceMetricSerializer.METRIC_KEY_MAX_LENGTH:
+        if len(metric_str) > DynatraceMetricsSerializer.METRIC_KEY_MAX_LENGTH:
             raise MetricError(
                 "Metric line exceeds maximum length of {} characters".format(
-                    DynatraceMetricSerializer.METRIC_KEY_MAX_LENGTH))
+                    DynatraceMetricsSerializer.METRIC_KEY_MAX_LENGTH))
 
         return metric_str
 
