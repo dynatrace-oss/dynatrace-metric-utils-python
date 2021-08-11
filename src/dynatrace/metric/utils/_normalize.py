@@ -50,6 +50,9 @@ class Normalize:
 
     # characters to be escaped in the dimension value
     __re_dv_characters_to_escape = re.compile(r"([= ,\\\"])")
+    # will match if the string has an odd number of escaped trailing
+    # backslashes
+    __re_dv_odd_number_of_trailing_slashes = re.compile(r"[^\\](?:\\\\)*\\$")
 
     __dv_max_length = 250
 
@@ -155,5 +158,11 @@ class Normalize:
                                dimension_value: str,
                                ) -> str:
         self.__logger.debug("escaping dimension value: %s", dimension_value)
-        return self.__re_dv_characters_to_escape.sub(r"\\\g<1>",
-                                                     dimension_value)
+        escaped = self.__re_dv_characters_to_escape.sub(r"\\\g<1>",
+                                                        dimension_value)
+
+        escaped = escaped[:self.__dv_max_length]
+        if self.__re_dv_odd_number_of_trailing_slashes.search(escaped):
+            escaped = escaped[:len(escaped) - 1]
+
+        return escaped

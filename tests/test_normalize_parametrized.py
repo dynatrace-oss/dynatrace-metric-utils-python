@@ -201,6 +201,13 @@ cases_escape_dimension_values = [
     ("escape consecutive special chars", "  ,,==\\\\",
      "\\ \\ \\,\\,\\=\\=\\\\\\\\"),
     ("escape key-value pair", "key=\"value\"", "key\\=\\\"value\\\""),
+    ("escape too long", "=" * 250, "\\=" * 125),
+    ("escape not broken apart", ("a" * 249) + "=", "a" * 249),
+    ("escape not broken 2", ("a" * 248) + "==", ("a") * 248 + "\\="),
+    ("leave an even number of trailing slashes", ("a" * 247) + "\\\\\\",
+     ("a" * 247) + "\\\\"),
+    # 260 backslashes will be transformed into 125 escaped backslashes
+    ("only backslashes", "\\" * 260, "\\\\" * 125)
 ]
 
 

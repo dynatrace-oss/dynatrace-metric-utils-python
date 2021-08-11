@@ -37,6 +37,7 @@ def _format_float(value: float):
         as_string = str(value)
 
     if "0e" in as_string:
+        # remove trailing zeroes in exponential notation
         start, end = as_string.split("e")
         start = str(start).rstrip("0")
         if start.endswith("."):
