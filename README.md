@@ -4,6 +4,14 @@ Python utility for interacting with
 the [Dynatrace v2 metrics API](https://www.dynatrace.com/support/help/dynatrace-api/environment-api/metric-v2/)
 .
 
+## Installation
+
+Clone this repo and
+
+```shell
+pip install .
+```
+
 ## Usage
 
 Using this library to create metric lines is a two-step process. First, create

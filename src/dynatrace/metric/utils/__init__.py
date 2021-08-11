@@ -13,6 +13,8 @@
 #  limitations under the License.
 
 
+# Ignore "imported but not used" errors. This is here, so all the types
+# can directly be imported from the module, without specifying the files.
 from .dynatrace_metrics_factory import DynatraceMetricsFactory  # noqa: F401
 from .dynatrace_metrics_serializer import \
     DynatraceMetricsSerializer  # noqa: F401
