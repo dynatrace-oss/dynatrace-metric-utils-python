@@ -71,13 +71,13 @@ class TestParseMetadata(unittest.TestCase):
 
     @patch('dynatrace.metric.utils._dynatrace_metadata_enricher'
            '.DynatraceMetadataEnricher._parse_dynatrace_metadata')
-    def test_tags_overwritten(self, mock_func):
-        mock_func.return_value = {"tag1": "newValue"}
+    def test_dimensions_overwritten(self, mock_func):
+        mock_func.return_value = {"dim1": "newValue"}
 
         enricher = DynatraceMetadataEnricher()
         metadata = enricher.get_dynatrace_metadata()
 
-        self.assertEqual({"tag1": "newValue"}, metadata)
+        self.assertEqual({"dim1": "newValue"}, metadata)
 
     def test_parse_valid_data(self):
         in_list = ["k1=v1\n", "k2=v2"]
