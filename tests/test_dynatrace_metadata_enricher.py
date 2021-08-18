@@ -131,7 +131,7 @@ class TestGetMetadataContents(unittest.TestCase):
             self.assertEqual(0, len(res))
 
     def test_get_file_contents_success(self):
-        # this only tests _get_metadata_file_content() paritally since both
+        # this only tests _get_metadata_file_content() partially since both
         # open calls are mocked, so even if the file does not exist this test
         # will pass since the second open call is also mocked.
         mock = mock_open()
