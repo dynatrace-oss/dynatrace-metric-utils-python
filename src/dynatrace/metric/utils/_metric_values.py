@@ -28,7 +28,7 @@ def _raise_if_nan_or_inf(value: Union[int, float]):
         raise metric_error.MetricError("Value is Infinite")
 
 
-def _format_float(value: float):
+def _format_number(value: Union[int, float]):
     if abs(value) > 1e15:
         as_string = "{:.8e}".format(value)
     elif 0 < abs(value) < 1e-15:
@@ -68,7 +68,7 @@ class GaugeValue(MetricValue):
         self._value = value
 
     def serialize_value(self) -> str:
-        return "gauge,{}".format(_format_float(self._value))
+        return "gauge,{}".format(_format_number(self._value))
 
 
 class CounterValueDelta(MetricValue):
@@ -79,7 +79,7 @@ class CounterValueDelta(MetricValue):
         self._value = value
 
     def serialize_value(self) -> str:
-        return "count,delta={}".format(_format_float(self._value))
+        return "count,delta={}".format(_format_number(self._value))
 
 
 class SummaryValue(MetricValue):
@@ -106,8 +106,8 @@ class SummaryValue(MetricValue):
 
     def serialize_value(self) -> str:
         return "gauge,min={},max={},sum={},count={}".format(
-            _format_float(self._min),
-            _format_float(self._max),
-            _format_float(self._sum),
+            _format_number(self._min),
+            _format_number(self._max),
+            _format_number(self._sum),
             self._count
         )

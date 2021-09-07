@@ -17,7 +17,7 @@ from unittest import TestCase
 
 from dynatrace.metric.utils import MetricError
 from dynatrace.metric.utils._metric_values import *
-from dynatrace.metric.utils._metric_values import _format_float
+from dynatrace.metric.utils._metric_values import _format_number
 
 
 class TestGaugeValue(TestCase):
@@ -106,52 +106,53 @@ class TestSummaryValue(TestCase):
 
 
 class TestFloatFormatting(TestCase):
-    def test__format_float(self):
-        self.assertEqual("0", _format_float(0))
-        self.assertEqual("0", _format_float(-0))
-        self.assertEqual("0", _format_float(0.0))
-        self.assertEqual("0", _format_float(-0.0))
-        self.assertEqual("0", _format_float(.0000000000000))
-        self.assertEqual("0", _format_float(-0.0000000000000))
-        self.assertEqual("123.456", _format_float(123.456))
-        self.assertEqual("-123.456", _format_float(-123.456))
-        self.assertEqual("0.3333333333333333", _format_float(1.0 / 3))
+    def test__format_number(self):
+        self.assertEqual("0", _format_number(0))
+        self.assertEqual("0", _format_number(-0))
+        self.assertEqual("0", _format_number(0.0))
+        self.assertEqual("0", _format_number(-0.0))
+        self.assertEqual("0", _format_number(.0000000000000))
+        self.assertEqual("0", _format_number(-0.0000000000000))
+        self.assertEqual("1", _format_number(1.0000000000000))
+        self.assertEqual("123.456", _format_number(123.456))
+        self.assertEqual("-123.456", _format_number(-123.456))
+        self.assertEqual("0.3333333333333333", _format_number(1.0 / 3))
         self.assertEqual("1.79769313e+308",
-                         _format_float(sys.float_info.max))
+                         _format_number(sys.float_info.max))
         self.assertEqual("-1.79769313e+308",
-                         _format_float(-sys.float_info.max))
+                         _format_number(-sys.float_info.max))
         # smallest positive float.
         self.assertEqual("2.22507386e-308",
-                         _format_float(sys.float_info.min))
-        self.assertEqual("1.0e+100", _format_float(1e100))
-        self.assertEqual("1.0e-100", _format_float(1e-100))
-        self.assertEqual("-1.0e+100", _format_float(-1e100))
-        self.assertEqual("-1.0e-100", _format_float(-1e-100))
-        self.assertEqual("1.234e+100", _format_float(1.234e100))
-        self.assertEqual("1.234e-100", _format_float(1.234e-100))
-        self.assertEqual("-1.234e+100", _format_float(-1.234e100))
-        self.assertEqual("-1.234e-100", _format_float(-1.234e-100))
-        self.assertEqual("1.0e+18", _format_float(1_000_000_000_000_000_000))
-        self.assertEqual("-1.0e+18", _format_float(-1_000_000_000_000_000_000))
-        self.assertEqual("1.1e+18", _format_float(1_100_000_000_000_000_000))
-        self.assertEqual("-1.1e+18", _format_float(-1_100_000_000_000_000_000))
-        self.assertEqual("1.0e-18", _format_float(0.000_000_000_000_000_001))
-        self.assertEqual("-1.0e-18", _format_float(-0.000_000_000_000_000_001))
-        self.assertEqual("1.234e+18", _format_float(1_234_000_000_000_000_000))
+                         _format_number(sys.float_info.min))
+        self.assertEqual("1.0e+100", _format_number(1e100))
+        self.assertEqual("1.0e-100", _format_number(1e-100))
+        self.assertEqual("-1.0e+100", _format_number(-1e100))
+        self.assertEqual("-1.0e-100", _format_number(-1e-100))
+        self.assertEqual("1.234e+100", _format_number(1.234e100))
+        self.assertEqual("1.234e-100", _format_number(1.234e-100))
+        self.assertEqual("-1.234e+100", _format_number(-1.234e100))
+        self.assertEqual("-1.234e-100", _format_number(-1.234e-100))
+        self.assertEqual("1.0e+18", _format_number(1_000_000_000_000_000_000))
+        self.assertEqual("-1.0e+18", _format_number(-1_000_000_000_000_000_000))
+        self.assertEqual("1.1e+18", _format_number(1_100_000_000_000_000_000))
+        self.assertEqual("-1.1e+18", _format_number(-1_100_000_000_000_000_000))
+        self.assertEqual("1.0e-18", _format_number(0.000_000_000_000_000_001))
+        self.assertEqual("-1.0e-18", _format_number(-0.000_000_000_000_000_001))
+        self.assertEqual("1.234e+18", _format_number(1_234_000_000_000_000_000))
         self.assertEqual("-1.234e+18",
-                         _format_float(-1_234_000_000_000_000_000))
+                         _format_number(-1_234_000_000_000_000_000))
         self.assertEqual("1.234e-18",
-                         _format_float(0.000_000_000_000_000_001_234))
+                         _format_number(0.000_000_000_000_000_001_234))
         self.assertEqual("-1.234e-18",
-                         _format_float(-0.000_000_000_000_000_001_234))
+                         _format_number(-0.000_000_000_000_000_001_234))
         self.assertEqual("1.1234567890123457",
-                         _format_float(1.1234567890123456789))
+                         _format_number(1.1234567890123456789))
         self.assertEqual("-1.1234567890123457",
-                         _format_float(-1.1234567890123456789))
-        self.assertEqual("200", _format_float(200.00000000000))
-        self.assertEqual("-200", _format_float(-200.000000000000))
+                         _format_number(-1.1234567890123456789))
+        self.assertEqual("200", _format_number(200.00000000000))
+        self.assertEqual("-200", _format_number(-200.000000000000))
 
         # these should never happen.
-        self.assertEqual("nan", _format_float(math.nan))
-        self.assertEqual("inf", _format_float(math.inf))
-        self.assertEqual("-inf", _format_float(-math.inf))
+        self.assertEqual("nan", _format_number(math.nan))
+        self.assertEqual("inf", _format_number(math.inf))
+        self.assertEqual("-inf", _format_number(-math.inf))

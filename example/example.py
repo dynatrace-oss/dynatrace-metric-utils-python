@@ -74,6 +74,7 @@ if __name__ == '__main__':
     print("maximum lines in export batch:",
           DynatraceMetricsApiConstants.payload_lines_limit())
 
+    print("====== Testing error handling =====")
     try:
         metric_factory.create_int_gauge("", 2)
     except MetricError as err:
