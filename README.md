@@ -16,7 +16,7 @@ pip install .
 
 Using this library to create metric lines is a two-step process. First, create
 lines using the `DynatraceMetricsFactory`. Then, serialize them using
-a `DynatraceMetricsSerializer`. Furthermore, this library contains static
+a `DynatraceMetricsSerializer`. Furthermore, this library contains 
 constants for use in projects consuming this library. This repository also
 contains [an example script](example/example.py) demonstrating the use of
 the `DynatraceMetricsFactory` and the `DynatraceMetricsSerializer`.
@@ -57,7 +57,6 @@ Finally, it is also possible to add a timestamp to the metric:
 
 ```python
 # Passing None for the dimensions will not add any dimensions to the metric.
-# Of course it is possible to pass dimensions and a timestamp at the same time.
 # pass the timestamp as unix-time milliseconds.
 metric = factory.create_int_gauge("int-gauge", 23, None, time.time() * 1000)
 
@@ -66,9 +65,8 @@ metric = factory.create_int_gauge("int-gauge", 23,
                                   timestamp=time.time() * 1000)
 ```
 
-Metrics created with a timestamp before the year 2000 or after the year 3000
-will raise an error. If the metric timestamp is omitted, the server timestamp
-is used upon ingestion.
+If the metric timestamp is omitted or invalid, the Dynatrace server uses its 
+current time upon ingestion.
 
 ### Metric serialization
 
@@ -105,21 +103,11 @@ print(serializer.serialize(metric))
 
 ### Common constants
 
-The constants can be accessed via the static getter methods on
-the `DynatraceMetricsApiConstants` class:
-
-```python
-print("default endpoint:",
-      DynatraceMetricsApiConstants.default_oneagent_endpoint())
-```
-
-The use of the common constants is also shown
-in [the example script](example/example.py).
+The constants can be accessed via the static `DynatraceMetricsApiConstants` class .
 
 Currently available constants are:
 
-- the
-  default [local OneAgent metric API endpoint](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/) (`default_oneagent_endpoint()`)
+- the default [local OneAgent metric API endpoint](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/local-api/) (`default_oneagent_endpoint()`)
 - the limit for how many metric lines can be ingested in one
   request (`payload_lines_limit()`)
 
@@ -127,13 +115,12 @@ Currently available constants are:
 
 If the `enrich_with_dynatrace_metadata` toggle in
 the `DynatraceMetricsSerializer`
-constructor is set to `True`, an attempt is made to read Dynatrace metadata. On
+constructor is set to `True` (=default), an attempt is made to read Dynatrace metadata. On
 a host with a running OneAgent, setting this option will collect metadata and
-add them as dimensions to all serialized metrics. Metadata typically consist of
+add it as dimensions to all serialized metrics. Metadata typically consist of
 the Dynatrace host ID and process group ID. More information on the underlying
 feature that is used by the library can be found in
-the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/enrich-metrics/)
-.
+the [Dynatrace documentation](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/ingestion-methods/enrich-metrics/).
 
 ### Dimension precedence
 
