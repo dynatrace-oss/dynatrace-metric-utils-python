@@ -6,10 +6,10 @@ the [Dynatrace v2 metrics API](https://www.dynatrace.com/support/help/dynatrace-
 
 ## Installation
 
-Clone this repo and
+To install the [latest version from PyPI](https://pypi.org/project/dynatrace-metric-utils/) run:
 
 ```shell
-pip install .
+pip install dynatrace-metric-utils
 ```
 
 ## Usage
@@ -134,5 +134,4 @@ the [metadata dimensions](#dynatrace-metadata-enrichment), as well as the
 metrics source, which is added as a dimension with `dt.metrics.source` as its
 key if the `metrics_source` is set. Note that the serializer-specific
 dimensions will only
-contain [dimension keys reserved by Dynatrace](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/#syntax)
-.
+contain [dimension keys reserved by Dynatrace](https://www.dynatrace.com/support/help/how-to-use-dynatrace/metrics/metric-ingestion/metric-ingestion-protocol/#syntax).
