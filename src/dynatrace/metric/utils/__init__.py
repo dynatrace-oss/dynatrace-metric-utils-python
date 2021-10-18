@@ -22,4 +22,4 @@ from .metric_error import MetricError  # noqa: F401
 from .dynatrace_metrics_api_constants import \
     DynatraceMetricsApiConstants  # noqa: F401
 
-VERSION = "0.1.0a0"
+VERSION = "0.1.0b0"
