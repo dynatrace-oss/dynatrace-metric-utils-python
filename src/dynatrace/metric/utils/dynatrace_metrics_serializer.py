@@ -118,7 +118,8 @@ class DynatraceMetricsSerializer:
 
         if len(metric_str) > DynatraceMetricsSerializer.METRIC_LINE_MAX_LENGTH:
             raise MetricError(
-                "Metric line exceeds maximum length of {} characters. Metric name: {}".format(
+                "Metric line exceeds maximum length of {} characters."
+                " Metric name: {}".format(
                     DynatraceMetricsSerializer.METRIC_LINE_MAX_LENGTH,
                     metric_key))
 
