@@ -27,7 +27,7 @@ class DynatraceMetricsSerializer:
     strings, while also enriching them with application- or Dynatrace-
     specific metadata.
     """
-    METRIC_KEY_MAX_LENGTH = 2000
+    METRIC_LINE_MAX_LENGTH = 50_000
 
     def __init__(self,
                  logger: Optional[logging.Logger] = None,
@@ -104,7 +104,6 @@ class DynatraceMetricsSerializer:
         ])
 
         if merged_dimensions:
-            # todo max number of dimensions
             builder.append(",")
             builder.append(self.__serialize_dimensions(merged_dimensions))
 
@@ -117,10 +116,12 @@ class DynatraceMetricsSerializer:
 
         metric_str = "".join(builder)
 
-        if len(metric_str) > DynatraceMetricsSerializer.METRIC_KEY_MAX_LENGTH:
+        if len(metric_str) > DynatraceMetricsSerializer.METRIC_LINE_MAX_LENGTH:
             raise MetricError(
-                "Metric line exceeds maximum length of {} characters".format(
-                    DynatraceMetricsSerializer.METRIC_KEY_MAX_LENGTH))
+                "Metric line exceeds maximum length of {} characters."
+                " Metric name: {}".format(
+                    DynatraceMetricsSerializer.METRIC_LINE_MAX_LENGTH,
+                    metric_key))
 
         return metric_str
 

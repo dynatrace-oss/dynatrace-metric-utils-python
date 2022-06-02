@@ -239,14 +239,20 @@ class TestDynatraceMetricSerializer(TestCase):
             serializer.serialize(self.factory.create_int_gauge("", 100))
 
     def test_serialized_line_too_long(self):
+        # 50000 characters max, 'dim0=val0' is the shortest dimension (9 chars)
         test_dims = {}
-        for i in range(20):
-            test_dims["a" * 50 + str(i)] = "b" * 50 + str(i)
+        num_dims = int(50000 / 9)
+
+        for i in range(num_dims):
+            test_dims[f"dim{i}"] = f"val{i}"
 
         serializer = DynatraceMetricsSerializer(
             enrich_with_dynatrace_metadata=False
         )
-        with self.assertRaises(MetricError):
+        with self.assertRaises(MetricError) as context:
             serializer.serialize(
                 self.factory.create_int_gauge("metric", 100, test_dims)
             )
+        self.assertEqual(
+            "Metric line exceeds maximum length of 50000 characters. Metric name: metric",
+            str(context.exception))
