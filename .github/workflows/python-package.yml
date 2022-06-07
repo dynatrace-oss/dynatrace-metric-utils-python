@@ -27,6 +27,8 @@ jobs:
     strategy:
       matrix:
         python-version:
+          - '3.7'
+        pypy-version:
           - 'pypy3.7'
 
     steps:
@@ -35,6 +37,12 @@ jobs:
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+      - name: Set up pypy
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.pypy-version }}
+        env:
+          AGENT_TOOLSDIRECTORY: RUNNER_TOOL_CACHE/PyPy/*
 
       - name: Install Dependencies
         run: |
