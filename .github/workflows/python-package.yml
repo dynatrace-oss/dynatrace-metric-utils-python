@@ -22,27 +22,40 @@ jobs:
           pip install -U wheel setuptools tox
       - run: tox -e lint
 
-  build-and-test:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version:
-          - '3.7'
-        pypy-version:
-          - 'pypy3.7'
-
-    steps:
+  build:
+      runs-on: ubuntu-latest
+      strategy:
+        matrix:
+          python-version:
+          - 'pypy3.7' # the latest available version of PyPy that supports Python 3.7
+          - 'pypy3.7-v7.3.3' # Python 3.7 and PyPy 7.3.3
+          - 'pypy3.8' # the latest available version of PyPy that supports Python 3.8
+      steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v3
+      - uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
-      - name: Set up pypy
-        uses: actions/setup-python@v3
-        with:
-          python-version: ${{ matrix.pypy-version }}
-        env:
-          AGENT_TOOLSDIRECTORY: RUNNER_TOOL_CACHE/PyPy/*
+#  build-and-test:
+#    runs-on: ubuntu-latest
+#    strategy:
+#      matrix:
+#        python-version:
+#          - '3.7'
+#        pypy-version:
+#          - 'pypy3'
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Set up Python ${{ matrix.python-version }}
+#        uses: actions/setup-python@v3
+#        with:
+#          python-version: ${{ matrix.python-version }}
+#      - name: Set up pypy
+#        uses: actions/setup-python@v3
+#        with:
+#          python-version: ${{ matrix.pypy-version }}
+#        env:
+#          AGENT_TOOLSDIRECTORY: RUNNER_TOOL_CACHE/PyPy/*
 
       - name: Install Dependencies
         run: |
