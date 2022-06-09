@@ -53,3 +53,10 @@ jobs:
           pip install -U wheel setuptools tox
       - name: Test
         run: tox -e py
+
+  all-passed:
+    needs: [ lint, build-and-test ]
+    runs-on: ubuntu-latest
+    steps:
+      - name: All checks passed
+        run: 'true'
