@@ -215,3 +215,19 @@ cases_escape_dimension_values = [
                          ids=[x[0] for x in cases_escape_dimension_values])
 def test_parametrized_escape_dimension_value(msg, inp, exp):
     assert normalizer.escape_dimension_value(inp) == exp
+
+
+cases_stringify_dimension_values = [
+    ("int", 1, "1"),
+    ("float", 2.3, "2.3"),
+    ("bool", True, "True"),
+    ("int array", [1, 2, 3], "[1, 2, 3]"),
+    ("float array", [1.2, 2.3, 3.4], "[1.2, 2.3, 3.4]"),
+    ("int array", [True, False, True], "[True, False, True]"),
+]
+
+
+@pytest.mark.parametrize("msg,inp,exp", cases_stringify_dimension_values,
+                         ids=[x[0] for x in cases_stringify_dimension_values])
+def test_parametrized_stringify_dimension_value(msg, inp, exp):
+    assert normalizer.normalize_dimension_value(inp) == exp

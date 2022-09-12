@@ -129,6 +129,7 @@ class Normalize:
             # will be serialized.
             return ""
 
+        dimension_value = str(dimension_value)
         dimension_value = dimension_value[:self.__dv_max_length]
 
         return self.__replace_control_characters(dimension_value)
