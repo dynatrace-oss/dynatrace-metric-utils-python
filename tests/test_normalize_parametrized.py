@@ -223,7 +223,7 @@ cases_stringify_dimension_values = [
     ("bool", True, "True"),
     ("int array", [1, 2, 3], "[1, 2, 3]"),
     ("float array", [1.2, 2.3, 3.4], "[1.2, 2.3, 3.4]"),
-    ("int array", [True, False, True], "[True, False, True]"),
+    ("bool array", [True, False, True], "[True, False, True]"),
 ]
 
 
