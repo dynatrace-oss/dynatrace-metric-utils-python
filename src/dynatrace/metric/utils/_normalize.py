@@ -16,6 +16,7 @@ import logging
 import re
 import unicodedata
 from typing import Mapping, Optional
+from .metric_error import MetricError
 
 
 class Normalize:
@@ -67,6 +68,10 @@ class Normalize:
         if not metric_key:
             return None
 
+        if not isinstance(metric_key, str):
+            raise MetricError(
+                f"Unexpected metric key type: {type(metric_key)}")
+
         # trim if too long
         metric_key = metric_key[:self.__mk_max_length]
 
@@ -102,6 +107,10 @@ class Normalize:
         if not dimension_key:
             return None
 
+        if not isinstance(dimension_key, str):
+            raise MetricError(
+                f"Unexpected dimension key type: {type(dimension_key)}")
+
         dimension_key = dimension_key[:self.__dk_max_length]
 
         sections = list(filter(None, map(
@@ -129,6 +138,9 @@ class Normalize:
             # will be serialized.
             return ""
 
+        if not isinstance(dimension_value, str):
+            raise MetricError(
+                f"Unexpected dimension value type: {type(dimension_value)}")
         dimension_value = dimension_value[:self.__dv_max_length]
 
         return self.__replace_control_characters(dimension_value)

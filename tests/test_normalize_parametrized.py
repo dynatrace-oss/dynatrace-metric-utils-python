@@ -12,9 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-import unittest
-
 import pytest
+from dynatrace.metric.utils import MetricError
 from dynatrace.metric.utils._normalize import Normalize
 
 normalizer = Normalize()
@@ -215,3 +214,40 @@ cases_escape_dimension_values = [
                          ids=[x[0] for x in cases_escape_dimension_values])
 def test_parametrized_escape_dimension_value(msg, inp, exp):
     assert normalizer.escape_dimension_value(inp) == exp
+
+
+cases_invalid_type = [
+    ("int", 1),
+    ("float", 2.3),
+    ("bool", True),
+    ("int array", [1, 2, 3]),
+    ("float array", [1.2, 2.3, 3.4]),
+    ("bool array", [True, False, True]),
+]
+
+
+@pytest.mark.parametrize("msg,inp", cases_invalid_type,
+                         ids=[x[0] for x in cases_invalid_type])
+def test_parametrized_invalid_dimension_value_type(msg, inp):
+    with pytest.raises(MetricError) as ex:
+        normalizer.normalize_dimension_value(inp)
+
+    assert str(ex.value) == f"Unexpected dimension value type: {type(inp)}"
+
+
+@pytest.mark.parametrize("msg,inp", cases_invalid_type,
+                         ids=[x[0] for x in cases_invalid_type])
+def test_parametrized_invalid_dimension_key_type(msg, inp):
+    with pytest.raises(MetricError) as ex:
+        normalizer.normalize_dimension_key(inp)
+
+    assert str(ex.value) == f"Unexpected dimension key type: {type(inp)}"
+
+
+@pytest.mark.parametrize("msg,inp", cases_invalid_type,
+                         ids=[x[0] for x in cases_invalid_type])
+def test_parametrized_invalid_metric_key_type(msg, inp):
+    with pytest.raises(MetricError) as ex:
+        normalizer.normalize_metric_key(inp)
+
+    assert str(ex.value) == f"Unexpected metric key type: {type(inp)}"
